@@ -124,7 +124,7 @@
             $cardClass = $isAvailable ? "" : "faded-card";
             $badgeClass = $row['availability_status'] == "Available" ? "success" : ($row['availability_status'] == "Rented" ? "warning" : "danger");
 
-            echo "<div class='col-md-4 d-flex align-items-stretch'>
+            echo "<div class='col col-12 col-md-4 d-flex align-items-stretch'>
                     <div class='card mb-4 shadow-sm $cardClass'>
                         <img src='{$row['image_link']}' class='card-img-top' alt='Vehicle'>
                         <div class='card-body'>
