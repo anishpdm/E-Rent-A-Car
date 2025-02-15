@@ -51,6 +51,9 @@
             <ul class="navbar-nav ms-auto">
 
                 <li class="nav-item"><a class="nav-link active" href="view-vehicles.php">View Vehicles</a></li>
+                <li class="nav-item"><a class="nav-link active" href="user-profile.php">View Profile</a></li>
+                <li class="nav-item"><a class="nav-link active" href="index.php"> Log Out </a></li>
+
             </ul>
         </div>
     </div>

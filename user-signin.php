@@ -1,3 +1,7 @@
+<?php
+session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -102,6 +106,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $user = $result->fetch_assoc();
         // Verify the provided password against the hashed password
         if (password_verify($password, $user['password'])) {
+
+            $_SESSION['user_id']=$user['id'];
+            $_SESSION['user_email'] = $user['email'];
+
             header('Location: view-vehicles.php');
             exit;
         } else {
