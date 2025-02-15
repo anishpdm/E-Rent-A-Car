@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->bind_param("sssssssi", $first_name, $middle_name, $last_name, $address, $aadhar, $pan, $dob, $user_id);
 
         if ($stmt->execute()) {
-            echo "<script>alert('Profile updated successfully'); window.location.href='profile.php';</script>";
+            echo "<script>alert('Profile updated successfully'); window.location.href='user-profile.php';</script>";
         } else {
             $error = "Update failed. Please try again.";
         }
