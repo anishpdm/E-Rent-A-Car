@@ -102,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $user = $result->fetch_assoc();
         // Verify the provided password against the hashed password
         if (password_verify($password, $user['password'])) {
-            header('Location: welcome.php');
+            header('Location: view-vehicles.php');
             exit;
         } else {
             echo "<script>alert('Invalid username or password'); window.location.href = 'user-signin.php';</script>";
