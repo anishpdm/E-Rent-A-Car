@@ -19,6 +19,10 @@
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item"><a class="nav-link" href="add-vehicle.php">Add Vehicle</a></li>
                 <li class="nav-item"><a class="nav-link" href="search-vehicle.php">Search Vehicle</a></li>
+                <li class="nav-item"><a class="nav-link" href="list-booking.php">Return Vehicle</a></li>
+                <li class="nav-item"><a class="nav-link" href="add-charge.php">Add Charging Station </a></li>
+                <li class="nav-item"><a class="nav-link" href="index.php">Log Out</a></li>
+
             </ul>
         </div>
     </div>

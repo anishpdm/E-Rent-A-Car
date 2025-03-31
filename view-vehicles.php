@@ -48,13 +48,14 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
+        <ul class="navbar-nav ms-auto">
 
-                <li class="nav-item"><a class="nav-link active" href="view-vehicles.php">View Vehicles</a></li>
-                <li class="nav-item"><a class="nav-link active" href="user-profile.php">View Profile</a></li>
-                <li class="nav-item"><a class="nav-link active" href="index.php"> Log Out </a></li>
+<li class="nav-item"><a class="nav-link active" href="view-vehicles.php">View Vehicles</a></li>
+<li class="nav-item"><a class="nav-link active" href="user-profile.php">View Profile</a></li>
+<li class="nav-item"><a class="nav-link active" href="view-user-booking.php">View Booking</a></li>
+<li class="nav-item"><a class="nav-link active" href="index.php"> Log Out </a></li>
 
-            </ul>
+</ul>
         </div>
     </div>
 </nav>

@@ -1,100 +1,166 @@
+<?php
+$conn = new mysqli("localhost", "root", "", "eRent");
+if ($conn->connect_error) { 
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Fetch available EVs
+$car_query = "SELECT id, model_name, manufacturer_name, rent_rate, image_link FROM vehicles WHERE availability_status='Available'";
+$car_result = $conn->query($car_query);
+
+// Fetch all charging stations for initial map display
+$station_query = "SELECT id, chargingStationName, Location, PinCode, Latitude, Longitude FROM chargingStations";
+$station_result = $conn->query($station_query);
+
+$stations = [];
+while ($station = $station_result->fetch_assoc()) {
+    $stations[] = $station;
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login - E-Vehicle Booking</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>EV Booking & Charging</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
-          body {
-            background-image:url("https://stimg.cardekho.com/images/carexteriorimages/930x620/Tata/Nexon-EV-2023/11024/1694146347051/front-left-side-47.jpg")  ;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-size: cover; /* Ensures the image covers the entire background */
-    background-position: center; /* Centers the image */
-    background-repeat: no-repeat; /* Prevents repeating the image */
-    height: 100vh; /* Makes the background cover the full height of the viewport */
-    margin: 0; /* Removes default margins */
-        }
-        body::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Black overlay with 50% transparency */
-    z-index: 1;
-}
-
-body * {
-    position: relative;
-    z-index: 2; /* Ensures content is above the fading overlay */
-    color: black; /* Makes text readable over the darkened background */
-}
-        .login-card {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        .login-card h2 {
-            color: #333;
-        }
-        .login-card .profile-image {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            margin: 0 auto 1rem;
-            display: block;
+        .map-container {
+            height: 400px;
         }
     </style>
-</head>
-<body>
 
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="login-card text-center">
-                <img src="https://png.pngtree.com/png-vector/20191101/ourmid/pngtree-cartoon-color-simple-male-avatar-png-image_1934459.jpg" alt="Admin" class="profile-image">
-                <h2 class="text-center">E-Vehicle Rental -  Admin Login</h2>
-                <form  method="POST">
-                    <div class="mb-3">
-                        <label for="username" class="form-label">Username</label>
-                        <input type="text" class="form-control" id="username" name="username" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100">Login</button>
-                    <a href="user-signup.php"> Click Here for User SignUp</a> 
-                    <br> <br>
-                    <a href="user-signin.php"> Click Here for User Sign In</a>
-                </form>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body class="font-sans">
+
+    <header class="bg-gray-100 p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="text-xl font-bold">EV Drive & Charge</div>
+            <nav class="space-x-4">
+                <a href="#" class="hover:text-blue-500">Home</a>
+                <a href="#book-ev" class="hover:text-blue-500">Book EV</a>
+                <a href="#find-charging" class="hover:text-blue-500">Find Charging</a>
+                <a href="login.php" class="hover:text-blue-500">Admin LogIn</a>
+                <a href="user-signin.php" class="hover:text-blue-500">User LogIn</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="bg-blue-100 py-20 text-center">
+        <div class="container mx-auto">
+            <h1 class="text-4xl font-bold mb-4">Drive Electric, Charge Anywhere</h1>
+            <p class="text-lg mb-8">Seamless EV booking and charging station finder.</p>
+            <div class="flex justify-center space-x-4">
+                <a href="#book-ev" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded">Book EV</a>
+                <a href="#find-charging" class="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded">Find Charging</a>
             </div>
         </div>
-    </div>
-</div>
+    </section>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <section id="book-ev" class="py-16">
+        <div class="container mx-auto">
+            <h2 class="text-3xl font-bold mb-8 text-center">Book Your EV</h2>
+            <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+               
+                <div class="md:w-3/4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <?php while ($car = $car_result->fetch_assoc()) { ?>
+                            <div class="border rounded p-4">
+                                <img src="<?= $car['image_link'] ?>" alt="<?= $car['model_name'] ?>" class="w-full mb-2">
+                                <h3 class="font-semibold"><?= $car['manufacturer_name'] ?> - <?= $car['model_name'] ?></h3>
+                                <p>Rent: ₹<?= $car['rent_rate'] ?>/day</p>
+                                <br>
+                                <a href="login.php" class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded mt-2">Book Now</a>
+                            </div>
+                        <?php } ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="find-charging" class="bg-gray-100 py-16">
+        <div class="container mx-auto">
+            <h2 class="text-3xl font-bold mb-8 text-center">Find Charging Stations</h2>
+            
+            <!-- Search Box -->
+            <input type="text" id="searchInput" placeholder="Enter Location or Pin Code" class="w-full p-3 border rounded">
+            
+            <div class="map-container mt-4" id="charging-map"></div>
+            
+            <!-- Results -->
+            <div id="stationList" class="mt-4">
+                <p class="text-center text-gray-500">Search results will appear here...</p>
+            </div>
+        </div>
+    </section>
+
+   
+
+
+    <footer class="bg-gray-800 text-white p-4 text-center">
+        <p>&copy; 2025 EV Drive & Charge. All rights reserved.</p>
+    </footer>
+
+
+
+
+
+    <script>
+        var map = L.map('charging-map').setView([10.8505, 76.2711], 7); // Default Kerala
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        var chargingStations = <?= json_encode($stations) ?>;
+        var markers = [];
+
+        function updateMap(stations) {
+            markers.forEach(marker => map.removeLayer(marker)); // Clear previous markers
+            markers = [];
+
+            stations.forEach(station => {
+                let marker = L.marker([station.Latitude, station.Longitude])
+                    .addTo(map)
+                    .bindPopup(`<b>${station.chargingStationName}</b><br>${station.Location}, ${station.PinCode}`);
+                markers.push(marker);
+            });
+        }
+
+        // Initial load of stations
+        updateMap(chargingStations);
+
+        // AJAX Search
+        $("#searchInput").on("keyup", function () {
+            let query = $(this).val().trim();
+            if (query.length < 2) return;
+
+            $.ajax({
+                url: "search_stations.php",
+                type: "GET",
+                data: { search: query },
+                success: function (response) {
+                    let stations = JSON.parse(response);
+                    updateMap(stations);
+
+                    let output = stations.length > 0 ? "" : "<p class='text-center text-red-500'>No stations found.</p>";
+                    stations.forEach(station => {
+                        output += `<div class="border p-3 mb-2">
+                                    <strong>${station.chargingStationName}</strong><br>
+                                    ${station.Location}, ${station.PinCode}
+                                </div>`;
+                    });
+                    $("#stationList").html(output);
+                }
+            });
+        });
+    </script>
 </body>
 </html>
 
-<!-- admin_login.php -->
-<?php
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-
-    // Default admin credentials
-    if ($username === 'admin' && $password === '12345') {
-        header('Location: add-vehicle.php');
-        exit;
-    } else {
-        echo "<script>alert('Invalid username or password'); window.location.href = 'index.php';</script>";
-    }
-}
-?>
+<?php $conn->close(); ?>

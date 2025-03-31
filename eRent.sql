@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Feb 15, 2025 at 10:27 AM
+-- Generation Time: Mar 31, 2025 at 06:33 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 7.4.33
 
@@ -20,6 +20,58 @@ SET time_zone = "+00:00";
 --
 -- Database: `eRent`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `bookings`
+--
+
+CREATE TABLE `bookings` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `vehicle_id` int(11) NOT NULL,
+  `booking_date` datetime NOT NULL,
+  `payment_status` varchar(20) NOT NULL,
+  `return_status` int(11) NOT NULL DEFAULT 0,
+  `return_date` datetime DEFAULT NULL,
+  `no_of_days` int(11) NOT NULL,
+  `total_amount_paid` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `bookings`
+--
+
+INSERT INTO `bookings` (`id`, `user_id`, `vehicle_id`, `booking_date`, `payment_status`, `return_status`, `return_date`, `no_of_days`, `total_amount_paid`) VALUES
+(4, 3, 3, '2025-03-30 17:41:00', 'Success', 1, '2025-03-30 21:14:42', 6, 3258),
+(5, 3, 4, '2025-03-30 17:46:40', 'Success', 1, '2025-03-30 21:17:10', 10, 7800),
+(6, 3, 4, '2025-03-30 17:53:19', 'Success', 1, '2025-03-30 21:29:43', 6, 4680),
+(7, 3, 3, '2025-03-30 18:01:11', 'Success', 1, '2025-03-30 21:32:29', 43, 23349),
+(8, 3, 4, '2025-03-31 04:17:33', 'Success', 1, '2025-03-31 07:48:02', 4, 3120);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `chargingStations`
+--
+
+CREATE TABLE `chargingStations` (
+  `id` int(11) NOT NULL,
+  `chargingStationName` varchar(111) NOT NULL,
+  `Location` varchar(111) NOT NULL,
+  `PinCode` varchar(111) NOT NULL,
+  `Latitude` varchar(111) NOT NULL,
+  `Longitude` varchar(111) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `chargingStations`
+--
+
+INSERT INTO `chargingStations` (`id`, `chargingStationName`, `Location`, `PinCode`, `Latitude`, `Longitude`) VALUES
+(1, 'Go EC ', 'Pandalam', '689501', '9.225', '76.6785'),
+(2, 'Go EC ', 'Adoor', '691523', '9.153', '76.7356');
 
 -- --------------------------------------------------------
 
@@ -45,8 +97,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `first_name`, `middle_name`, `last_name`, `address`, `aadhar`, `pan`, `dob`, `email`, `password`) VALUES
-(1, 'Anish', 'S', 'Nair', 'NEDUNGADAPPALLY KULANGARACKAL', '9816928234567897', 'ATNPN0584G', '1997-01-09', 'anish.vilayil.s@gmail.com', '$2y$10$IZv30ONRfLRG5udpt2FEVuZnVuPjgaWSPzqmviKB3Et.6vwv/8yJW'),
-(2, 'Anish', 'S', 'Nair', 'NEDUNGADAPPALLY KULANGARACKAL', '1234567890987654', 'ATNPN0584G', '2000-01-11', 'anish.vilayil.s@gmail.com', '$2y$10$2gJYjQi1X037dYeNGsss8Oa/mnSGe1THe6O9fO32YT4th9i0QDMDG');
+(2, 'Anish', 'S', 'Nair', 'NEDUNGADAPPALLY KULANGARACKAL', '1234567890987654', 'ATNPN0584G', '2000-01-11', 'anish.vilayil.s@gmail.com', '$2y$10$2gJYjQi1X037dYeNGsss8Oa/mnSGe1THe6O9fO32YT4th9i0QDMDG'),
+(3, 'Anish', 'S', 'Nair', 'NEDUNGADAPPALLY KULANGARACKAL', '1234567890987654', 'ATNPN0584G', '1980-01-17', 'anish.vilayil.s1@gmail.com', '$2y$10$JwHoeMO.mHAEoyxSbR2..e.zl8BnRtUuRbwjul5kYR8h8BFz4Hhdi');
 
 -- --------------------------------------------------------
 
@@ -81,6 +133,20 @@ INSERT INTO `vehicles` (`id`, `vehicle_number`, `model_name`, `manufacturer_name
 --
 
 --
+-- Indexes for table `bookings`
+--
+ALTER TABLE `bookings`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `vehicle_id` (`vehicle_id`);
+
+--
+-- Indexes for table `chargingStations`
+--
+ALTER TABLE `chargingStations`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -98,16 +164,39 @@ ALTER TABLE `vehicles`
 --
 
 --
+-- AUTO_INCREMENT for table `bookings`
+--
+ALTER TABLE `bookings`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `chargingStations`
+--
+ALTER TABLE `chargingStations`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `vehicles`
 --
 ALTER TABLE `vehicles`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `bookings`
+--
+ALTER TABLE `bookings`
+  ADD CONSTRAINT `bookings_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  ADD CONSTRAINT `bookings_ibfk_2` FOREIGN KEY (`vehicle_id`) REFERENCES `vehicles` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
